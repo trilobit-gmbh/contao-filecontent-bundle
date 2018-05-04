@@ -1,5 +1,5 @@
 {
-    "name": "trilobit/contao-filecontent-bundle",
+    "name": "trilobit-gmbh/contao-filecontent-bundle",
     "type": "contao-bundle",
     "description": "Contao 4 filecontent bundle",
     "license": "LGPL-3.0-or-later",
