@@ -36,18 +36,6 @@ class HookGetSearchablePages extends \Controller
         }
 
         return false;
-
-        /*
-        foreach ($arrExcludeDirs as $value)
-        {
-            if (preg_match('|^' . $value . '|i', $strCurrentDir))
-            {
-                return true;
-            }
-        }
-
-        return false;
-        */
     }
 
     /**
