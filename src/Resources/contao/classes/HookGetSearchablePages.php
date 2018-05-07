@@ -87,13 +87,6 @@ class HookGetSearchablePages extends \Controller
      */
     public function getSearchablePages($arrPages, $intRoot=0, $blnIsSitemap=false)
     {
-        $arrRoot = array();
-
-        if ($intRoot > 0)
-        {
-            $arrRoot = $this->Database->getChildRecords($intRoot, 'tl_page');
-        }
-
         /**
          * Security
          * - known in database
