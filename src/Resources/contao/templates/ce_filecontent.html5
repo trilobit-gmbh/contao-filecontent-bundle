@@ -1,0 +1,28 @@
+
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->listView) { ?>
+    <strong>herunterladen</strong>
+    <ul>
+        <?php foreach ($this->files as $file) { ?>
+            <li class="download-element ext-<?= $file['extension']; ?>">
+                <a href="<?= $file['href']; ?>" title="<?= $file['title']; ?>" type="<?= $file['mime']; ?>"><?= $file['link']; ?> <span class="size">(<?= $file['filesize']; ?>)</span></a>
+            </li>
+        <?php } ?>
+    </ul>
+
+    <strong>anzeigen</strong>
+    <ul>
+        <?php foreach ($this->files as $file) { ?>
+            <li class="download-element ext-<?= $file['extension']; ?>">
+                <a href="<?= str_replace('file=', 'item=', $file['href']); ?>" title="<?= str_replace('herunterladen', 'anzeigen', $file['title']); ?>"><?= $file['link']; ?></a>
+            </li>
+        <?php } ?>
+    </ul>
+<?php } else { ?>
+    <?= $this->content; ?>
+<?php } ?>
+
+<?php $this->endblock(); ?>

@@ -1,11 +1,10 @@
 <?php
 
 /*
- * This file is part of Contao.
- *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-filecontent-bundle
  */
 
 namespace Trilobit\FilecontentBundle;
@@ -13,7 +12,7 @@ namespace Trilobit\FilecontentBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Configures the trilobit file 2 content bundle.
+ * Configures the trilobit filecontent bundle.
  *
  * @author trilobit GmbH <https://github.com/trilobit-gmbh>
  */

@@ -1,22 +1,16 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package   Trilobit\FilecontentBundle
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+declare(strict_types=1);
+
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-filecontent-bundle
  */
 
-$GLOBALS['FE_MOD']['file2content'] = array
-(
-    'filecontentreader' => 'Trilobit\FilecontentBundle\ModuleFilecontentReader',
-);
+use Trilobit\FilecontentBundle\Controller\PdfToContent;
 
-$GLOBALS['TL_HOOKS']['getFileContent'][] = array('Trilobit\FilecontentBundle\PdfToContent', 'getPdfContent');
+$GLOBALS['TL_HOOKS']['getFileContent'][] = [PdfToContent::class, 'getPdfContent'];
 
-$GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('Trilobit\FilecontentBundle\HookGetSearchablePages', 'getSearchablePages');
-
+$GLOBALS['TL_CTE']['files']['filecontent'] = Trilobit\FilecontentBundle\Element\ContentFiles::class;
