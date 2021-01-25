@@ -1,28 +1,32 @@
 
-<?php $this->extend('block_unsearchable'); ?>
+<?php $this->extend('block_searchable'); ?>
 
 <?php $this->block('content'); ?>
 
 <?php if ($this->listView) { ?>
+    <!-- indexer::stop -->
     <strong>herunterladen</strong>
     <ul>
         <?php foreach ($this->files as $file) { ?>
-            <li class="download-element ext-<?= $file['extension']; ?>">
-                <a href="<?= $file['href']; ?>" title="<?= $file['title']; ?>" type="<?= $file['mime']; ?>"><?= $file['link']; ?> <span class="size">(<?= $file['filesize']; ?>)</span></a>
+            <li class="download-element ext-<?php echo $file['extension']; ?>">
+                <a href="<?php echo $file['file']; ?>" title="<?php echo $file['title']; ?>" type="<?php echo $file['mime']; ?>"><?php echo $file['link']; ?> <span class="size">(<?php echo $file['filesize']; ?>)</span></a>
             </li>
         <?php } ?>
     </ul>
-
     <strong>anzeigen</strong>
     <ul>
         <?php foreach ($this->files as $file) { ?>
-            <li class="download-element ext-<?= $file['extension']; ?>">
-                <a href="<?= str_replace('file=', 'item=', $file['href']); ?>" title="<?= str_replace('herunterladen', 'anzeigen', $file['title']); ?>"><?= $file['link']; ?></a>
+            <li class="download-element ext-<?php echo $file['extension']; ?>">
+                <a href="<?php echo $file['content']; ?>" title="<?php echo str_replace('herunterladen', 'anzeigen', $file['title']); ?>"><?php echo $file['link']; ?></a>
             </li>
         <?php } ?>
     </ul>
+    <!-- indexer::continue -->
+
 <?php } else { ?>
-    <?= $this->content; ?>
+    <h1><?php echo $this->title; ?></h1>
+    <h2><?php echo $this->file->path; ?></h2>
+    <p><?php echo $this->content; ?></p>
 <?php } ?>
 
 <?php $this->endblock(); ?>
