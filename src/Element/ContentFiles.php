@@ -24,12 +24,30 @@ use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
 
+/**
+ * Class ContentFiles
+ * @package Trilobit\FilecontentBundle\Element
+ */
 class ContentFiles extends ContentElement
 {
+    /**
+     * @var string[]
+     */
+    public static $slug = ['file', 'content'];
+
+    /**
+     * @var string[]
+     */
     protected $objFiles;
 
+    /**
+     * @var string
+     */
     protected $strTemplate = 'ce_filecontent';
 
+    /**
+     * @return string
+     */
     public function generate()
     {
         if ($this->useHomeDir && System::getContainer()->get('contao.security.token_checker')->hasFrontendUser()) {
@@ -52,45 +70,19 @@ class ContentFiles extends ContentElement
             return '';
         }
 
-        $file = Input::get('file', true);
-        $item = Input::get('item', true);
+        $file = Input::get(self::$slug[0], true);
+        $item = Input::get(self::$slug[1], true);
 
         if (($file || $item) && (!isset($_GET['cid']) || Input::get('cid') === $this->id)) {
             while ($this->objFiles->next()) {
+                // download
                 if (!empty($file) && ($file === $this->objFiles->path || \dirname($file) === $this->objFiles->path)) {
-                    Controller::sendFileToBrowser($file, (bool) $this->inline);
+                    $this->triggerDownload($file);
                 }
 
+                // comntent
                 if (!empty($item) && ($item === $this->objFiles->path || \dirname($item) === $this->objFiles->path)) {
-                    $buffer = '';
-
-                    if (isset($GLOBALS['TL_HOOKS']['getFileContent']) && \is_array($GLOBALS['TL_HOOKS']['getFileContent'])) {
-                        foreach ($GLOBALS['TL_HOOKS']['getFileContent'] as $callback) {
-                            $this->import($callback[0]);
-                            $buffer = $this->{$callback[0]}->{$callback[1]}($this->objFiles, $buffer);
-                        }
-                    }
-
-                    // @var PageModel $objPage
-                    global $objPage;
-
-                    $arrMeta = $this->getMetaData($this->objFiles->meta, $objPage->language);
-
-                    if (empty($arrMeta)) {
-                        if (null !== $objPage->rootFallbackLanguage) {
-                            $arrMeta = $this->getMetaData($this->objFiles->meta, $objPage->rootFallbackLanguage);
-                        }
-                    }
-
-                    if (!$arrMeta['title']) {
-                        $arrMeta['title'] = str_replace('.'.pathinfo($this->objFiles->name, \PATHINFO_EXTENSION), '', StringUtil::specialchars($this->objFiles->name));
-                    }
-
-                    $objPage->title = $arrMeta['title'];
-                    $objPage->pageTitle = $arrMeta['title'];
-
-                    $this->fileTitle = $arrMeta['title'];
-                    $this->fileContent = (('UTF-8' === mb_detect_encoding($buffer, 'UTF-8, ISO-8859-1', true)) ? $buffer : utf8_encode($buffer));
+                    $this->triggerFilecontent($item);
                 }
             }
 
@@ -104,6 +96,9 @@ class ContentFiles extends ContentElement
         return parent::generate();
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function compile()
     {
         global $objPage;
@@ -144,15 +139,13 @@ class ContentFiles extends ContentElement
 
                 $strHref = Environment::get('request');
 
-                if (isset($_GET['file'])) {
-                    $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
+                if (isset($_GET[self::$slug[0]])) {
+                    $strHref = preg_replace('/(&(amp;)?|\?)'.self::$slug[0].'=[^&]+/', '', $strHref);
                 }
 
                 if (isset($_GET['cid'])) {
                     $strHref = preg_replace('/(&(amp;)?|\?)cid=\d+/', '', $strHref);
                 }
-
-                $strHref .= (false !== strpos($strHref, '?') ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path).'&amp;cid='.$this->id;
 
                 $files[$objFiles->path] = [
                     'id' => $objFiles->id,
@@ -161,7 +154,8 @@ class ContentFiles extends ContentElement
                     'title' => StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
                     'link' => $arrMeta['title'],
                     'caption' => $arrMeta['caption'],
-                    'href' => $strHref,
+                    'file' => $strHref.(false !== strpos($strHref, '?') ? '&amp;' : '?').self::$slug[0].'='.System::urlEncode($objFiles->path).'&amp;cid='.$this->id,
+                    'content' => $strHref.(false !== strpos($strHref, '?') ? '&amp;' : '?').self::$slug[1].'='.System::urlEncode($objFiles->path),
                     'filesize' => $this->getReadableSize($objFile->filesize),
                     'icon' => Image::getPath($objFile->icon),
                     'mime' => $objFile->mime,
@@ -207,11 +201,9 @@ class ContentFiles extends ContentElement
 
                     $strHref = Environment::get('request');
 
-                    if (preg_match('/(&(amp;)?|\?)file=/', $strHref)) {
-                        $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
+                    if (preg_match('/(&(amp;)?|\?)'.self::$slug[0].'=/', $strHref)) {
+                        $strHref = preg_replace('/(&(amp;)?|\?)'.self::$slug[0].'=[^&]+/', '', $strHref);
                     }
-
-                    $strHref .= (false !== strpos($strHref, '?') ? '&amp;' : '?').'file='.System::urlEncode($objSubfiles->path);
 
                     $files[$objSubfiles->path] = [
                         'id' => $objSubfiles->id,
@@ -220,7 +212,8 @@ class ContentFiles extends ContentElement
                         'title' => StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
                         'link' => $arrMeta['title'],
                         'caption' => $arrMeta['caption'],
-                        'href' => $strHref,
+                        'file' => $strHref.(false !== strpos($strHref, '?') ? '&amp;' : '?').self::$slug[0].'='.System::urlEncode($objSubfiles->path).'&amp;cid='.$this->id,
+                        'content' => $strHref.(false !== strpos($strHref, '?') ? '&amp;' : '?').self::$slug[1].'='.System::urlEncode($objSubfiles->path),
                         'filesize' => $this->getReadableSize($objFile->filesize),
                         'icon' => Image::getPath($objFile->icon),
                         'mime' => $objFile->mime,
@@ -284,13 +277,62 @@ class ContentFiles extends ContentElement
 
         $this->Template->listView = true;
 
-        if (!empty(Input::get('item'))) {
+        if (!empty(Input::get(self::$slug[1]))) {
             $this->Template->listView = false;
+            $objPage->noSearch = false;
         }
 
+        $this->Template->file = $this->file;
         $this->Template->title = $this->fileTitle;
         $this->Template->content = $this->fileContent;
 
         $this->Template->files = array_values($files);
+    }
+
+    /**
+     * @param $file
+     */
+    protected function triggerDownload($file)
+    {
+        Controller::sendFileToBrowser($file, (bool) $this->inline);
+    }
+
+    /**
+     * @param $item
+     */
+    protected function triggerFilecontent($item)
+    {
+        $buffer = '';
+
+        $itemFileData = FilesModel::findByPath($item);
+
+        if (isset($GLOBALS['TL_HOOKS']['getFileContent']) && \is_array($GLOBALS['TL_HOOKS']['getFileContent'])) {
+            foreach ($GLOBALS['TL_HOOKS']['getFileContent'] as $callback) {
+                $this->import($callback[0]);
+                $buffer = $this->{$callback[0]}->{$callback[1]}($itemFileData, $buffer);
+            }
+        }
+
+        // @var PageModel $objPage
+        global $objPage;
+
+        $arrMeta = $this->getMetaData($itemFileData->meta, $objPage->language);
+
+        if (empty($arrMeta)) {
+            if (null !== $objPage->rootFallbackLanguage) {
+                $arrMeta = $this->getMetaData($itemFileData->meta, $objPage->rootFallbackLanguage);
+            }
+        }
+
+        if (!$arrMeta['title']) {
+            $arrMeta['title'] = str_replace('.'.pathinfo($itemFileData->name, \PATHINFO_EXTENSION), '', StringUtil::specialchars($itemFileData->name));
+        }
+
+        $objPage->title = $arrMeta['title'];
+        $objPage->pageTitle = $arrMeta['title'];
+
+        $this->fileTitle = $arrMeta['title'];
+        $this->file = $itemFileData;
+        $this->fileContent = (('UTF-8' === mb_detect_encoding($buffer, 'UTF-8, ISO-8859-1', true)) ? $buffer : utf8_encode($buffer));
     }
 }
