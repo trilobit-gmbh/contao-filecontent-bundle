@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Trilobit\FilecontentBundle\Controller;
 
-use Contao\Model\Collection;
+use Contao\FilesModel;
 use Contao\System;
 
 /**
@@ -19,7 +19,12 @@ use Contao\System;
  */
 class PdfToContent
 {
-    public function getPdfContent(Collection $file = null, string $buffer = ''): string
+    /**
+     * @param FilesModel|null $file
+     * @param string $buffer
+     * @return string
+     */
+    public function getPdfContent(FilesModel $file = null, string $buffer = ''): string
     {
         if ('pdf' !== $file->extension) {
             return '';
@@ -27,7 +32,9 @@ class PdfToContent
 
         $filePath = System::getContainer()->getParameter('kernel.project_dir').'/'.$file->path;
 
-        $buffer = shell_exec("$(which pdftotext) -q '{$filePath}' -");
+        $command = "$(which pdftotext) -q '{$filePath}' -";
+
+        $buffer = shell_exec($command);
 
         return $buffer ? $buffer : '';
     }
