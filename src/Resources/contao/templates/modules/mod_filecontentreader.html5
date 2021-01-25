@@ -1,6 +1,0 @@
-<?php
-global $objPage;
-$objPage->title = $this->title;
-?>
-
-<?= $this->content ?>
