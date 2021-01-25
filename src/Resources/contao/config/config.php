@@ -10,7 +10,10 @@ declare(strict_types=1);
  */
 
 use Trilobit\FilecontentBundle\Controller\PdfToContent;
+use Trilobit\FilecontentBundle\Element\ContentFiles;
+use Trilobit\FilecontentBundle\Module\Search;
 
 $GLOBALS['TL_HOOKS']['getFileContent'][] = [PdfToContent::class, 'getPdfContent'];
+$GLOBALS['TL_HOOKS']['indexPage'][] = [Search::class, 'updateIndexPage'];
 
-$GLOBALS['TL_CTE']['files']['filecontent'] = Trilobit\FilecontentBundle\Element\ContentFiles::class;
+$GLOBALS['TL_CTE']['files']['filecontent'] = ContentFiles::class;
