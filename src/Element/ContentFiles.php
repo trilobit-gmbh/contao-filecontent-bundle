@@ -25,8 +25,7 @@ use Contao\StringUtil;
 use Contao\System;
 
 /**
- * Class ContentFiles
- * @package Trilobit\FilecontentBundle\Element
+ * Class ContentFiles.
  */
 class ContentFiles extends ContentElement
 {

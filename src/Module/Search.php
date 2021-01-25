@@ -14,14 +14,12 @@ namespace Trilobit\FilecontentBundle\Module;
 use Trilobit\FilecontentBundle\Element\ContentFiles;
 
 /**
- * Class Search
- * @package Trilobit\FilecontentBundle\Module
+ * Class Search.
  */
 class Search extends \Contao\Search
 {
     /**
      * @param $content
-     * @param array $data
      * @param $set
      */
     public static function updateIndexPage($content, array $data, &$set)

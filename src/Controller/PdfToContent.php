@@ -19,11 +19,6 @@ use Contao\System;
  */
 class PdfToContent
 {
-    /**
-     * @param FilesModel|null $file
-     * @param string $buffer
-     * @return string
-     */
     public function getPdfContent(FilesModel $file = null, string $buffer = ''): string
     {
         if ('pdf' !== $file->extension) {
