@@ -22,7 +22,7 @@ class PdfToContent
     public function getPdfContent(FilesModel $file = null, string $buffer = ''): string
     {
         if ('pdf' !== $file->extension) {
-            return '';
+            return $buffer;
         }
 
         $filePath = System::getContainer()->getParameter('kernel.project_dir').'/'.$file->path;
