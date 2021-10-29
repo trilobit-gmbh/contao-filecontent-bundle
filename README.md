@@ -7,7 +7,7 @@ Das neue Inhaltselement stellt zwei Listen (und die jeweiligen Detailseiten) zur
 - eine Liste mit Links auf die "Detailseite" des Dokuments.
 Die Übersicht ist vom Suchindex ausgeschlossen. Dies kann jedoch bei Bedarf im Template selbst einfach angepasst werden. Auch ob die Listen angezeigt werden lässt sich einfach anpassen. Die Links auf die jeweiligen Detailseiten der Dokumente sollten jedoch bei Bedarf nur ausgeblendet und nicht entfernt werden (denn dann kann der Contao-Crawler diese Seiten nicht mehr erreichen und damit auch nicht in den Suchindex übernehmen).
 
-Ist die Seite mit diesem Inhlatselement für den Contao-Crawler erreichbar, werden die Verknüpften Dokumente ausgelesen und in der Inhalt in den Suchindex übernommen.
+Ist die Seite mit diesem Inhaltselement für den Contao-Crawler erreichbar, werden die verknüpften Dokumente ausgelesen und in der Inhalt in den Suchindex übernommen.
 Wird nach einen Begriff gesucht, der einem PDF Dokument zugeordnet ist, wird bei Klick auf das Suchergebnis dieses File zurückgegeben (je nach Einstellung im Inhaltselement).
 
 Das Bundle kann via Hook auch um eigene, weitere individuelle Konverter ergänzt werden (z.B. für Text-Files, CSV, ...)
